@@ -13,11 +13,12 @@ namespace nonstd
 {
 class result
 {
-  public:
   std::mutex m;
   std::condition_variable cond;
   bool waitEnabled = true;
   bool workdone = false;
+
+  public:
   void get()
   {
     if (waitEnabled)
@@ -30,11 +31,11 @@ class result
         cond.wait(l, [this]()->bool {return workdone;});
       }
     }
-
   }
+
+  friend class thread_pool;
 };
 
-template<int MAX_THREADS>
 class thread_pool
 {
    struct job_info
@@ -53,8 +54,12 @@ class thread_pool
    std::queue<job_info *> jobs;
    bool terminate = false;
    
+   int MAX_THREADS;
   public:
-   thread_pool() {}
+   thread_pool(int n = 1):MAX_THREADS(n)
+     {
+        if (MAX_THREADS <= 0) MAX_THREADS = 1;
+     }
 
    void worker(int id)
      {

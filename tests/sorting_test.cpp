@@ -23,7 +23,7 @@ void setNum(int &x)
 int main()
 {
    std::srand(std::time(nullptr));
-   nonstd::thread_pool<4> pool;
+   nonstd::thread_pool pool(4);
    pool.start();
 
    nonstd::result res;
@@ -34,6 +34,7 @@ int main()
 
    pool.addJob([&v]()->void { std::sort(begin(v), std::end(v)); }, res);
 
+   std::this_thread::sleep_for(std::chrono::seconds(100));
    res.get();
 
    for (auto &x: v)

@@ -13,7 +13,7 @@ void doWork()
 }
 int main()
 {
-   nonstd::thread_pool<14> pool;
+   nonstd::thread_pool pool(14);
    pool.start();
    nonstd::result res;
    pool.addJob(doWork, res);
