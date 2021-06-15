@@ -77,28 +77,28 @@ class thread_pool
                   {
                     job = jobs.front();
                     jobs.pop();
+                    job->fobject->workdone = false;
                   }
                   else break;
                }
-            if (!terminate)
-            {
-              job->fobject->workdone = false;
-                if (job->fobject->waitEnabled)
-                {
-                  job->fobject->m.lock();
-                }
-                job->f();
-                if (job->fobject->waitEnabled)
-                {
-                job->fobject->m.unlock();
-                job->fobject->cond.notify_one();
-                }
-                job->fobject->workdone = true;
-                if (!job->fobject->waitEnabled)
-                  delete job->fobject;
-                delete job;
-            }
+             if (!terminate)
+               {
+                  if (job->fobject->waitEnabled)
+                    {
+                       job->fobject->m.lock();
+                    }
+                  job->f();
+                  if (job->fobject->waitEnabled)
+                    {
+                       job->fobject->m.unlock();
+                       job->fobject->cond.notify_one();
+                    }
 
+                  job->fobject->workdone = true;
+                  if (!job->fobject->waitEnabled)
+                    delete job->fobject;
+                  delete job;
+               }
           }
      }
    void start()
