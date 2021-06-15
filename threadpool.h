@@ -8,6 +8,7 @@
 #include <functional>
 #include <queue>
 #include <iostream>
+#include <atomic>
 
 namespace nonstd
 {
@@ -16,7 +17,7 @@ class result
   std::mutex m;
   std::condition_variable cond;
   bool waitEnabled = true;
-  bool workdone = false;
+  std::atomic<bool> workdone = false;
 
   public:
   void get()
