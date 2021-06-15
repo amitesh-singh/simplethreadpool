@@ -23,8 +23,12 @@ class result
     if (waitEnabled)
     {
     //blocking call
-      std::unique_lock<std::mutex> l(m);
-      cond.wait(l, [this]()->bool {return workdone;});
+      //only wait when work is not done.
+      if (!workdone)
+      {
+        std::unique_lock<std::mutex> l(m);
+        cond.wait(l, [this]()->bool {return workdone;});
+      }
     }
 
   }
