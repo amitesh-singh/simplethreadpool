@@ -34,7 +34,6 @@ int main()
 
    pool.addJob([&v]()->void { std::sort(begin(v), std::end(v)); }, res);
 
-   std::this_thread::sleep_for(std::chrono::seconds(100));
    res.get();
 
    for (auto &x: v)
