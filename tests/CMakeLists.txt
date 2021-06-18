@@ -15,3 +15,7 @@ target_link_libraries(start_stop_with_jobs_test pthread)
 add_executable(sorting_test sorting_test.cpp)
 target_compile_options(sorting_test PRIVATE -std=c++17 -DDEBUG -ggdb)
 target_link_libraries(sorting_test pthread)
+
+add_executable(sorting_test_withsleep sorting_test_withsleep.cpp)
+target_compile_options(sorting_test_withsleep PRIVATE -std=c++17 -DDEBUG -ggdb)
+target_link_libraries(sorting_test_withsleep pthread)
