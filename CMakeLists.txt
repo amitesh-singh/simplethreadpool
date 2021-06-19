@@ -1,3 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 project(simplethreadpool)
+add_library(threadpool SHARED threadpool.cpp)
 add_subdirectory(tests)
+install(TARGETS threadpool DESTINATION lib)
+install(FILES threadpool.h DESTINATION include)

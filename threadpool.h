@@ -20,19 +20,7 @@ namespace nonstd
         std::atomic<bool> workdone = false;
 
        public:
-        void get()
-          {
-             if (waitEnabled)
-               {
-                  //blocking call
-                  //only wait when work is not done.
-                  if (!workdone)
-                    {
-                       std::unique_lock<std::mutex> l(m);
-                       cond.wait(l, [this]()->bool {return workdone;});
-                    }
-               }
-          }
+        void get();
 
         friend class thread_pool;
      };
@@ -54,105 +42,17 @@ namespace nonstd
         int MAX_THREADS;
 
        public:
-        thread_pool(int n = 1):MAX_THREADS(n)
-        {
-           if (MAX_THREADS <= 0) MAX_THREADS = 1;
-        }
+        thread_pool(int n = 1);
 
-        void worker(int id)
-          {
-#ifdef DEBUG
-             std::cout << "starting thread: " << std::this_thread::get_id() << std::endl;
-#endif
-             while (1)
-               {
-                  job_info *job;
-                    {
-                       std::unique_lock<std::mutex> l(m);
-                       cond.wait(l, [this]()->bool { return !jobs.empty() || terminate; });
-                       if (!terminate)
-                         {
-                            job = jobs.front();
-                            jobs.pop();
-                            job->fobject->workdone = false;
-                         }
-                       else break;
-                    }
-                  if (!terminate)
-                    {
-                       if (job->fobject->waitEnabled)
-                         {
-                            job->fobject->m.lock();
-                         }
-                       job->f();
-                       if (job->fobject->waitEnabled)
-                         {
-                            job->fobject->m.unlock();
-                            job->fobject->cond.notify_one();
-                         }
+        void worker(int id);
 
-                       job->fobject->workdone = true;
-                       if (!job->fobject->waitEnabled)
-                         delete job->fobject;
-                       delete job;
-                    }
-               }
-          }
+        void start();
 
-        void start()
-          {
-             int n = MAX_THREADS;
-#ifdef DEBUG
-             std::cout << "available threads are: " << n << std::endl;
-#endif
-             for (int i = 0; i < n; ++i)
-               {
-                  thread_list.push_back(new std::thread(&thread_pool::worker, this, i));
-               }
-          }
+        void stop();
 
-        void stop()
-          {
-             m.lock();
-             terminate = true;
-             m.unlock();
-             cond.notify_all();
+        void addJob(std::function<void()> f, result &fobject);
 
-             //join all threads
-             int n = MAX_THREADS;
-             for (int i = 0; i < n; ++i)
-               {
-                  thread_list[i]->join();
-               }
-
-             for (auto &x: thread_list)
-               delete x;
-
-             while (!jobs.empty())
-               {
-                  auto job = jobs.front();
-                  jobs.pop();
-                  delete job;
-               }
-          }
-
-        void addJob(std::function<void()> f, result &fobject)
-          {
-             fobject.waitEnabled = true;
-             fobject.workdone = false;
-             std::unique_lock<std::mutex> l(m);
-             jobs.push(new job_info(f, &fobject));
-             cond.notify_one();
-          }
-
-        void addJob(std::function<void()> f)
-          {
-             result *dummyobj = new result();
-             dummyobj->waitEnabled = false;
-             std::unique_lock<std::mutex> l(m);
-             jobs.push(new job_info(f, dummyobj));
-             cond.notify_one();
-          }
+        void addJob(std::function<void()> f);
      };
 }
 #endif
