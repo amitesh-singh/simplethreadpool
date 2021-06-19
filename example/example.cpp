@@ -1,17 +1,3 @@
-# simplethreadpool
-a simple threadpool library written in cpp.
-
-## Build
-
-```shell
-$ cmake .
-$ make
-$ make install
-
-```
-## Example
-
-```cpp
 #include <iostream>
 #include "threadpool.h"
 #include <chrono>
@@ -68,7 +54,3 @@ int main()
    return 0;
 }
 
-```
-```shell
-$ g++ example.cpp  -lpthread -lthreadpool
-```
