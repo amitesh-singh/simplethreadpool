@@ -1,5 +1,9 @@
 # simplethreadpool
-a simple threadpool library written in cpp.
+a simple threadpool library written in C++.
+
+- starts all threads at start.
+- stops and join all threads at stop.
+- result object for wait.
 
 ## Build
 
@@ -72,3 +76,8 @@ int main()
 ```shell
 $ g++ example.cpp  -lpthread -lthreadpool
 ```
+
+## TODOs
+
+- starts threads when required, lazy initialization
+
