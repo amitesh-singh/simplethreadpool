@@ -50,29 +50,29 @@ namespace nonstd
                 std::unique_lock<std::mutex> l(m);
                 cond.wait(l, [this]()->bool { return !jobs.empty() || terminate; });
                 if (!terminate)
-                    {
-                    job = jobs.front();
-                    jobs.pop();
-                    }
+                  {
+                     job = jobs.front();
+                     jobs.pop();
+                  }
                 else break;
             }
             if (!terminate)
             {
-                if (job->fobject->waitEnabled)
-                    {
+               if (job->fobject->waitEnabled)
+                 {
                     job->fobject->m.lock();
-                    }
-                job->f();
-                if (job->fobject->waitEnabled)
-                    {
+                 }
+               job->f();
+               job->fobject->workdone = true;
+               if (job->fobject->waitEnabled)
+                 {
                     job->fobject->m.unlock();
-                    job->fobject->cond.notify_one();
-                    }
+                    job->fobject->cond.notify_all();
+                 }
 
-                job->fobject->workdone = true;
-                if (!job->fobject->waitEnabled)
-                    delete job->fobject;
-                delete job;
+               if (!job->fobject->waitEnabled)
+                 delete job->fobject;
+               delete job;
             }
         }
     }
