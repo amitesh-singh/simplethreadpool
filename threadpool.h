@@ -58,10 +58,10 @@ namespace nonstd
         bool terminate = false;
         int MAX_THREADS;
 
+        void worker(int id);
+
        public:
         thread_pool(int n = 1);
-
-        void worker(int id);
 
         void start();
 
