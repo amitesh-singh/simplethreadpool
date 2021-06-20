@@ -11,5 +11,4 @@ builddir/*
 */builddir/
 */builddir/*
 *.so
-tests/*
 install_manifest.txt

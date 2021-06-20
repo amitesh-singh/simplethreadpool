@@ -20,3 +20,7 @@ target_link_libraries(sorting_test threadpool pthread)
 add_executable(sorting_test_withsleep sorting_test_withsleep.cpp)
 target_compile_options(sorting_test_withsleep PRIVATE -std=c++17 -DDEBUG -ggdb)
 target_link_libraries(sorting_test_withsleep threadpool pthread)
+
+add_executable(async_callback async_callback.cpp)
+target_compile_options(async_callback PRIVATE -std=c++17 -DDEBUG -ggdb)
+target_link_libraries(async_callback threadpool pthread)
