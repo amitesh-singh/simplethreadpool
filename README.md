@@ -53,7 +53,7 @@ int main()
 
    pool.addJob(doWork); //don't wait
    pool.addJob([&v]()->void {
-                                std::sort(begin(v), std::end(v));
+                                std::sort(std::begin(v), std::end(v));
                                 std::cout << "sorting is finished\n";
                             },
                             res);
