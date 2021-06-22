@@ -17,6 +17,11 @@
 
 #include "threadpool.h"
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
+
 namespace nonstd
 {
     void result::get()

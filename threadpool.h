@@ -24,7 +24,6 @@
 #include <vector>
 #include <functional>
 #include <queue>
-#include <iostream>
 #include <atomic>
 
 namespace nonstd
